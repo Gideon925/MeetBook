@@ -35,7 +35,7 @@
         <h1>Booking Records</h1>
 
         <p>
-            View all submitted meet-up bookings.
+            View bookings, payment receipts and payment status.
         </p>
 
     </div>
@@ -59,6 +59,9 @@
                     <th>Time</th>
                     <th>Hours</th>
                     <th>Total</th>
+                    <th>Payment</th>
+                    <th>Receipt</th>
+                    <th>Action</th>
                 </tr>
 
             </thead>
@@ -70,48 +73,159 @@
 
                 <tr>
 
+                    <!-- CUSTOMER PICTURE -->
+
                     <td>
 
                         <img
-                            src="{{ url_for('uploaded_file', filename=booking.customer_photo) }}"
+                            src="{{ url_for(
+                                'uploaded_file',
+                                filename=booking.customer_photo
+                            ) }}"
                             alt="Customer Picture"
                             class="customer-photo"
                         >
 
                     </td>
 
+
+                    <!-- BOOKING ID -->
+
                     <td>
                         #{{ booking.id }}
                     </td>
+
+
+                    <!-- NAME -->
 
                     <td>
                         {{ booking.full_name }}
                     </td>
 
+
+                    <!-- PHONE -->
+
                     <td>
                         {{ booking.phone }}
                     </td>
+
+
+                    <!-- LOCATION -->
 
                     <td>
                         {{ booking.location }}
                     </td>
 
+
+                    <!-- DATE -->
+
                     <td>
                         {{ booking.booking_date }}
                     </td>
+
+
+                    <!-- TIME -->
 
                     <td>
                         {{ booking.start_time }}
                     </td>
 
+
+                    <!-- HOURS -->
+
                     <td>
                         {{ booking.hours }}
                     </td>
 
+
+                    <!-- TOTAL -->
+
                     <td>
+
                         <strong>
                             ₦{{ "{:,}".format(booking.total_cost) }}
                         </strong>
+
+                    </td>
+
+
+                    <!-- PAYMENT STATUS -->
+
+                    <td>
+
+                        {% if booking.payment_status == "Approved" %}
+
+                            <strong>
+                                Approved
+                            </strong>
+
+                        {% else %}
+
+                            <strong>
+                                Pending
+                            </strong>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- PAYMENT RECEIPT -->
+
+                    <td>
+
+                        {% if booking.payment_receipt %}
+
+                            <a
+                                href="{{ url_for(
+                                    'payment_receipt',
+                                    filename=booking.payment_receipt
+                                ) }}"
+                                target="_blank"
+                            >
+                                View Receipt
+                            </a>
+
+                        {% else %}
+
+                            No Receipt
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        {% if booking.payment_status != "Approved" %}
+
+                            <form
+                                action="{{ url_for(
+                                    'approve_payment',
+                                    booking_id=booking.id
+                                ) }}"
+                                method="POST"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="submit-btn"
+                                >
+                                    Approve Payment
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <strong>
+                                Confirmed
+                            </strong>
+
+                        {% endif %}
+
                     </td>
 
                 </tr>

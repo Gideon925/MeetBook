@@ -8,9 +8,11 @@ app = Flask(__name__)
 # Settings
 DATABASE = "database.db"
 UPLOAD_FOLDER = "uploads"
+PAYMENT_FOLDER = "payment_receipts"
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
+app.config["PAYMENT_FOLDER"] = PAYMENT_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 # Prices
 HOURLY_RATE = 500
@@ -22,8 +24,9 @@ LOCATIONS = {
 }
 
 
-# Create database
+# Create / update database
 def init_db():
+
     conn = sqlite3.connect(DATABASE)
 
     conn.execute("""
@@ -38,9 +41,27 @@ def init_db():
             hours INTEGER NOT NULL,
             hourly_cost INTEGER NOT NULL,
             transport_fee INTEGER NOT NULL,
-            total_cost INTEGER NOT NULL
+            total_cost INTEGER NOT NULL,
+            payment_receipt TEXT,
+            payment_status TEXT DEFAULT 'Pending'
         )
     """)
+
+    # Add payment columns if they don't exist
+    columns = [
+        row[1]
+        for row in conn.execute("PRAGMA table_info(bookings)").fetchall()
+    ]
+
+    if "payment_receipt" not in columns:
+        conn.execute(
+            "ALTER TABLE bookings ADD COLUMN payment_receipt TEXT"
+        )
+
+    if "payment_status" not in columns:
+        conn.execute(
+            "ALTER TABLE bookings ADD COLUMN payment_status TEXT DEFAULT 'Pending'"
+        )
 
     conn.commit()
     conn.close()
@@ -68,7 +89,9 @@ def book():
         booking_date = request.form.get("booking_date")
         start_time = request.form.get("start_time")
         hours = request.form.get("hours")
+
         photo = request.files.get("customer_photo")
+        payment_receipt = request.files.get("payment_receipt")
 
         # Check required information
         if not all([
@@ -78,9 +101,10 @@ def book():
             booking_date,
             start_time,
             hours,
-            photo
+            photo,
+            payment_receipt
         ]):
-            return "Please complete all fields."
+            return "Please complete all fields and upload your payment receipt."
 
         # Check location
         if location not in LOCATIONS:
@@ -95,7 +119,7 @@ def book():
         if hours < 1:
             return "Hours must be at least 1."
 
-        # Check image
+        # Allowed image types
         allowed_extensions = {
             "jpg",
             "jpeg",
@@ -103,17 +127,20 @@ def book():
             "webp"
         }
 
+        # -------------------------
+        # Customer photo
+        # -------------------------
+
         filename = secure_filename(photo.filename)
 
         if "." not in filename:
-            return "Please upload a valid image."
+            return "Please upload a valid customer image."
 
         extension = filename.rsplit(".", 1)[1].lower()
 
         if extension not in allowed_extensions:
-            return "Only JPG, JPEG, PNG and WEBP images are allowed."
+            return "Customer photo must be JPG, JPEG, PNG or WEBP."
 
-        # Save image
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
         photo_path = os.path.join(
@@ -123,12 +150,45 @@ def book():
 
         photo.save(photo_path)
 
+        # -------------------------
+        # Payment receipt
+        # -------------------------
+
+        receipt_filename = secure_filename(
+            payment_receipt.filename
+        )
+
+        if "." not in receipt_filename:
+            return "Please upload a valid payment receipt."
+
+        receipt_extension = receipt_filename.rsplit(".", 1)[1].lower()
+
+        if receipt_extension not in allowed_extensions:
+            return "Payment receipt must be JPG, JPEG, PNG or WEBP."
+
+        os.makedirs(PAYMENT_FOLDER, exist_ok=True)
+
+        receipt_path = os.path.join(
+            app.config["PAYMENT_FOLDER"],
+            receipt_filename
+        )
+
+        payment_receipt.save(receipt_path)
+
+        # -------------------------
         # Calculate price
+        # -------------------------
+
         hourly_cost = hours * HOURLY_RATE
+
         transport_fee = LOCATIONS[location]
+
         total_cost = hourly_cost + transport_fee
 
+        # -------------------------
         # Save booking
+        # -------------------------
+
         conn = sqlite3.connect(DATABASE)
 
         cursor = conn.cursor()
@@ -144,9 +204,11 @@ def book():
                 hours,
                 hourly_cost,
                 transport_fee,
-                total_cost
+                total_cost,
+                payment_receipt,
+                payment_status
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             full_name,
             phone,
@@ -157,7 +219,9 @@ def book():
             hours,
             hourly_cost,
             transport_fee,
-            total_cost
+            total_cost,
+            receipt_filename,
+            "Pending"
         ))
 
         booking_id = cursor.lastrowid
@@ -179,11 +243,12 @@ def book():
     )
 
 
-# Success page
+# Booking status page
 @app.route("/success/<int:booking_id>")
 def success(booking_id):
 
     conn = sqlite3.connect(DATABASE)
+
     conn.row_factory = sqlite3.Row
 
     booking = conn.execute(
@@ -207,6 +272,7 @@ def success(booking_id):
 def admin():
 
     conn = sqlite3.connect(DATABASE)
+
     conn.row_factory = sqlite3.Row
 
     bookings = conn.execute(
@@ -221,9 +287,31 @@ def admin():
     )
 
 
+# Approve payment
+@app.route("/admin/approve/<int:booking_id>", methods=["POST"])
+def approve_payment(booking_id):
+
+    conn = sqlite3.connect(DATABASE)
+
+    conn.execute(
+        """
+        UPDATE bookings
+        SET payment_status = 'Approved'
+        WHERE id = ?
+        """,
+        (booking_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin"))
+
+
 # Display uploaded customer photos
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
+
     from flask import send_from_directory
 
     return send_from_directory(
@@ -232,7 +320,20 @@ def uploaded_file(filename):
     )
 
 
+# Display payment receipts
+@app.route("/payment_receipts/<filename>")
+def payment_receipt(filename):
+
+    from flask import send_from_directory
+
+    return send_from_directory(
+        app.config["PAYMENT_FOLDER"],
+        filename
+    )
+
+
 if __name__ == "__main__":
+
     init_db()
 
     app.run(

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Booking Successful | MeetBook</title>
+    <title>Booking Status | MeetBook</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -30,21 +30,50 @@
 
     <div class="success-card">
 
-        <div class="success-icon">
-            ✓
-        </div>
+        {% if booking.payment_status == "Approved" %}
 
-        <p class="small-title">
-            BOOKING CONFIRMED
-        </p>
+            <div class="success-icon">
+                ✓
+            </div>
 
-        <h1>
-            Your Booking Was Successful
-        </h1>
+            <p class="small-title">
+                BOOKING CONFIRMED
+            </p>
 
-        <p>
-            Your meet-up details have been received successfully.
-        </p>
+            <h1>
+                Your Booking Was Successful
+            </h1>
+
+            <p>
+                Your payment has been verified and your
+                meet-up booking is confirmed.
+            </p>
+
+        {% else %}
+
+            <div class="success-icon">
+                ⏳
+            </div>
+
+            <p class="small-title">
+                PAYMENT VERIFICATION PENDING
+            </p>
+
+            <h1>
+                Booking Submitted
+            </h1>
+
+            <p>
+                Your booking has been received, but your payment
+                has not been verified yet.
+            </p>
+
+            <p>
+                Please wait while the administrator verifies
+                your payment.
+            </p>
+
+        {% endif %}
 
 
         <div class="booking-details">
@@ -86,12 +115,25 @@
 
             <div class="detail">
                 <span>Hourly Cost</span>
-                <strong>₦{{ "{:,}".format(booking.hourly_cost) }}</strong>
+                <strong>
+                    ₦{{ "{:,}".format(booking.hourly_cost) }}
+                </strong>
             </div>
 
             <div class="detail">
                 <span>Transport Fee</span>
-                <strong>₦{{ "{:,}".format(booking.transport_fee) }}</strong>
+                <strong>
+                    ₦{{ "{:,}".format(booking.transport_fee) }}
+                </strong>
+            </div>
+
+            <div class="detail">
+                <span>Payment Status</span>
+
+                <strong>
+                    {{ booking.payment_status }}
+                </strong>
+
             </div>
 
         </div>
@@ -106,6 +148,17 @@
             </strong>
 
         </div>
+
+
+        {% if booking.payment_status != "Approved" %}
+
+            <p>
+                Your booking is currently <strong>pending</strong>.
+                It will become confirmed after your payment
+                has been verified.
+            </p>
+
+        {% endif %}
 
 
         <a href="/" class="btn">

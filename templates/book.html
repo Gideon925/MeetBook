@@ -49,6 +49,8 @@
           class="booking-form">
 
 
+        <!-- CUSTOMER INFORMATION -->
+
         <div class="form-section">
 
             <h2>Your Information</h2>
@@ -110,6 +112,8 @@
 
         </div>
 
+
+        <!-- MEET-UP DETAILS -->
 
         <div class="form-section">
 
@@ -213,6 +217,8 @@
         </div>
 
 
+        <!-- PRICING -->
+
         <div class="price-box">
 
             <h3>
@@ -225,8 +231,67 @@
             </p>
 
             <p>
-                Your final total will include the hourly cost
+                Your final total includes the hourly cost
                 and your selected location's transport fee.
+            </p>
+
+        </div>
+
+
+        <!-- PAYMENT -->
+
+        <div class="form-section payment-section">
+
+            <h2>Payment</h2>
+
+            <p>
+                Please make your payment to the account below
+                before submitting your booking.
+            </p>
+
+            <div class="payment-box">
+
+                <p>
+                    <strong>Bank:</strong>
+                    Ecobank
+                </p>
+
+                <p>
+                    <strong>Account Name:</strong>
+                    Gideon Bissong
+                </p>
+
+                <p>
+                    <strong>Account Number:</strong>
+                    58-6020-5753
+                </p>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="payment_receipt">
+                    Upload Payment Receipt
+                </label>
+
+                <input
+                    type="file"
+                    id="payment_receipt"
+                    name="payment_receipt"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+
+                <small>
+                    Upload a clear screenshot or image of your payment receipt.
+                </small>
+
+            </div>
+
+            <p>
+                <strong>Important:</strong>
+                Your booking will remain pending until the payment
+                has been verified by the administrator.
             </p>
 
         </div>
@@ -236,7 +301,7 @@
             type="submit"
             class="submit-btn"
         >
-            Complete Booking
+            Submit Booking & Payment
         </button>
 
 
