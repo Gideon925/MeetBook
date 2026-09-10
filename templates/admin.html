@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin | MeetBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        MeetBook
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/book">New Booking</a>
+    </nav>
+
+</header>
+
+
+<main class="admin-page">
+
+    <div class="admin-header">
+
+        <p class="small-title">ADMIN DASHBOARD</p>
+
+        <h1>Booking Records</h1>
+
+        <p>
+            View all submitted meet-up bookings.
+        </p>
+
+    </div>
+
+
+    {% if bookings %}
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Picture</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Hours</th>
+                    <th>Total</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for booking in bookings %}
+
+                <tr>
+
+                    <td>
+
+                        <img
+                            src="{{ url_for('uploaded_file', filename=booking.customer_photo) }}"
+                            alt="Customer Picture"
+                            class="customer-photo"
+                        >
+
+                    </td>
+
+                    <td>
+                        #{{ booking.id }}
+                    </td>
+
+                    <td>
+                        {{ booking.full_name }}
+                    </td>
+
+                    <td>
+                        {{ booking.phone }}
+                    </td>
+
+                    <td>
+                        {{ booking.location }}
+                    </td>
+
+                    <td>
+                        {{ booking.booking_date }}
+                    </td>
+
+                    <td>
+                        {{ booking.start_time }}
+                    </td>
+
+                    <td>
+                        {{ booking.hours }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ₦{{ "{:,}".format(booking.total_cost) }}
+                        </strong>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <h2>No Bookings Yet</h2>
+
+        <p>
+            Customer bookings will appear here.
+        </p>
+
+        <a href="/book" class="btn">
+            Create Test Booking
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+
+<footer>
+
+    <h3>MeetBook</h3>
+
+    <p>
+        Admin Dashboard
+    </p>
+
+</footer>
+
+</body>
+</html>

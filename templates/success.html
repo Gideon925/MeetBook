@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Successful | MeetBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        MeetBook
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/book">Book Again</a>
+    </nav>
+
+</header>
+
+
+<main class="success-page">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <p class="small-title">
+            BOOKING CONFIRMED
+        </p>
+
+        <h1>
+            Your Booking Was Successful
+        </h1>
+
+        <p>
+            Your meet-up details have been received successfully.
+        </p>
+
+
+        <div class="booking-details">
+
+            <div class="detail">
+                <span>Booking ID</span>
+                <strong>#{{ booking.id }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Name</span>
+                <strong>{{ booking.full_name }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Phone</span>
+                <strong>{{ booking.phone }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Location</span>
+                <strong>{{ booking.location }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Date</span>
+                <strong>{{ booking.booking_date }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Start Time</span>
+                <strong>{{ booking.start_time }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Duration</span>
+                <strong>{{ booking.hours }} hour(s)</strong>
+            </div>
+
+            <div class="detail">
+                <span>Hourly Cost</span>
+                <strong>₦{{ "{:,}".format(booking.hourly_cost) }}</strong>
+            </div>
+
+            <div class="detail">
+                <span>Transport Fee</span>
+                <strong>₦{{ "{:,}".format(booking.transport_fee) }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="total-box">
+
+            <span>Total Cost</span>
+
+            <strong>
+                ₦{{ "{:,}".format(booking.total_cost) }}
+            </strong>
+
+        </div>
+
+
+        <a href="/" class="btn">
+            Back to Home
+        </a>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <h3>MeetBook</h3>
+
+    <p>
+        Simple scheduling made easy.
+    </p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MeetBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            MeetBook
+        </div>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/book">Book Now</a>
+            <a href="/admin">Admin</a>
+        </nav>
+
+    </header>
+
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="small-title">
+                SIMPLE • FAST • CONVENIENT
+            </p>
+
+            <h1>
+                Schedule Your<br>
+                Meet-Up
+            </h1>
+
+            <p>
+                Choose a location, select your date and time,
+                and make your booking easily.
+            </p>
+
+            <a href="/book" class="btn">
+                Book Now
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <section class="locations">
+
+        <div class="section-title">
+
+            <p>LOCATIONS</p>
+
+            <h2>
+                Choose Your Location
+            </h2>
+
+            <span>
+                Select one of our available meeting locations.
+            </span>
+
+        </div>
+
+
+        <div class="location-grid">
+
+            {% for location, fee in locations.items() %}
+
+            <div class="location-card">
+
+                <div class="location-image">
+
+                    {% if location == "11:11" %}
+
+                    <div class="image-placeholder">
+                        11:11
+                    </div>
+
+                    {% elif location == "University of Calabar" %}
+
+                    <div class="image-placeholder">
+                        UNICAL
+                    </div>
+
+                    {% else %}
+
+                    <div class="image-placeholder">
+                        MARINA RESORT
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="location-content">
+
+                    <h3>
+                        {{ location }}
+                    </h3>
+
+                    <p>
+                        Transport fee:
+                        <strong>₦{{ "{:,}".format(fee) }}</strong>
+                    </p>
+
+                    <a href="/book?location={{ location }}"
+                       class="location-btn">
+                        Select Location
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <section class="pricing">
+
+        <div>
+
+            <p class="small-title">
+                SIMPLE PRICING
+            </p>
+
+            <h2>
+                ₦{{ "{:,}".format(hourly_rate) }}
+            </h2>
+
+            <p>
+                Per hour
+            </p>
+
+        </div>
+
+
+        <div class="pricing-info">
+
+            <h3>
+                How payment is calculated
+            </h3>
+
+            <p>
+                Your total cost is calculated using:
+            </p>
+
+            <p>
+                <strong>
+                    Number of hours × ₦{{ "{:,}".format(hourly_rate) }}
+                </strong>
+            </p>
+
+            <p>
+                Plus the transport fee for your selected location.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="how-it-works">
+
+        <div class="section-title">
+
+            <p>HOW IT WORKS</p>
+
+            <h2>
+                Three Simple Steps
+            </h2>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <h3>
+                    Choose a Location
+                </h3>
+
+                <p>
+                    Select where you would like the meet-up
+                    to take place.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <h3>
+                    Choose Date & Time
+                </h3>
+
+                <p>
+                    Select your preferred date, start time
+                    and number of hours.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <h3>
+                    Complete Booking
+                </h3>
+
+                <p>
+                    Enter your information and submit
+                    your booking.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <h3>
+            MeetBook
+        </h3>
+
+        <p>
+            Simple scheduling made easy.
+        </p>
+
+        <p>
+            © 2026 MeetBook
+        </p>
+
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book a Meet-Up | MeetBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        MeetBook
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/book">Book Now</a>
+        <a href="/admin">Admin</a>
+    </nav>
+
+</header>
+
+
+<main class="booking-page">
+
+    <div class="booking-header">
+
+        <p class="small-title">MAKE A BOOKING</p>
+
+        <h1>Schedule Your Meet-Up</h1>
+
+        <p>
+            Fill in your information and choose your preferred
+            location, date and time.
+        </p>
+
+    </div>
+
+
+    <form action="/book"
+          method="POST"
+          enctype="multipart/form-data"
+          class="booking-form">
+
+
+        <div class="form-section">
+
+            <h2>Your Information</h2>
+
+            <div class="form-group">
+
+                <label for="full_name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="customer_photo">
+                    Your Picture
+                </label>
+
+                <input
+                    type="file"
+                    id="customer_photo"
+                    name="customer_photo"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+
+                <small>
+                    Upload your own JPG, PNG or WEBP picture.
+                    Maximum size: 5MB.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-section">
+
+            <h2>Meet-Up Details</h2>
+
+
+            <div class="form-group">
+
+                <label for="location">
+                    Location
+                </label>
+
+                <select
+                    id="location"
+                    name="location"
+                    required
+                >
+
+                    <option value="">
+                        Select a location
+                    </option>
+
+                    {% for location, fee in locations.items() %}
+
+                    <option value="{{ location }}">
+                        {{ location }} — Transport ₦{{ "{:,}".format(fee) }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="booking_date">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="booking_date"
+                        name="booking_date"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="start_time">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="start_time"
+                        name="start_time"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="hours">
+                    Number of Hours
+                </label>
+
+                <select
+                    id="hours"
+                    name="hours"
+                    required
+                >
+
+                    <option value="">
+                        Select duration
+                    </option>
+
+                    <option value="1">1 Hour</option>
+                    <option value="2">2 Hours</option>
+                    <option value="3">3 Hours</option>
+                    <option value="4">4 Hours</option>
+                    <option value="5">5 Hours</option>
+                    <option value="6">6 Hours</option>
+                    <option value="7">7 Hours</option>
+                    <option value="8">8 Hours</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="price-box">
+
+            <h3>
+                Pricing
+            </h3>
+
+            <p>
+                Hourly rate:
+                <strong>₦{{ "{:,}".format(hourly_rate) }}</strong>
+            </p>
+
+            <p>
+                Your final total will include the hourly cost
+                and your selected location's transport fee.
+            </p>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="submit-btn"
+        >
+            Complete Booking
+        </button>
+
+
+    </form>
+
+</main>
+
+
+<footer>
+
+    <h3>MeetBook</h3>
+
+    <p>
+        Simple scheduling made easy.
+    </p>
+
+</footer>
+
+</body>
+</html>
