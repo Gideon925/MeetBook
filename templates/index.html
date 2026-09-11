@@ -70,37 +70,32 @@
 
         </div>
 
-
         <div class="location-grid">
 
             {% for location, fee in locations.items() %}
 
             <div class="location-card">
 
-                <div class="location-image">
+              <div class="location-image">
 
-                    {% if location == "11:11" %}
+    {% if location == "11:11" %}
 
-                    <div class="image-placeholder">
-                        11:11
-                    </div>
+        <img src="{{ url_for('static', filename='images/1111/11:11-1.jpeg') }}"
+             alt="11:11">
 
-                    {% elif location == "University of Calabar" %}
+    {% elif location == "University of Calabar" %}
 
-                    <div class="image-placeholder">
-                        UNICAL
-                    </div>
+        <img src="{{ url_for('static', filename='images/unical/unical1.jpeg') }}"
+             alt="University of Calabar">
 
-                    {% else %}
+    {% else %}
 
-                    <div class="image-placeholder">
-                        MARINA RESORT
-                    </div>
+        <img src="{{ url_for('static', filename='images/marina/ma.jpeg') }}"
+             alt="Marina Resort">
 
-                    {% endif %}
+    {% endif %}
 
-                </div>
-
+</div>
 
                 <div class="location-content">
 
