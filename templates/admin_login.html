@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | MeetBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        MeetBook
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/book">New Booking</a>
+    </nav>
+
+</header>
+
+<main class="admin-page">
+
+    <div class="admin-header">
+
+        <p class="small-title">ADMIN ACCESS</p>
+
+        <h1>Admin Login</h1>
+
+        <p>
+            Enter the administrator password to continue.
+        </p>
+
+    </div>
+
+    <form method="POST">
+
+        <label for="password">
+            Admin Password
+        </label>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            required
+        >
+
+        {% if error %}
+
+            <p>
+                {{ error }}
+            </p>
+
+        {% endif %}
+
+        <button
+            type="submit"
+            class="submit-btn"
+        >
+            Login
+        </button>
+
+    </form>
+
+</main>
+
+</body>
+</html>

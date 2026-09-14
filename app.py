@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get("SECRET_KEY", "meetbook-development-key")
 
 # Settings
 DATABASE = "database.db"
@@ -267,12 +269,37 @@ def success(booking_id):
     )
 
 
-# Admin page
-@app.route("/admin")
+# Admin login
+@app.route("/admin", methods=["GET", "POST"])
 def admin():
 
-    conn = sqlite3.connect(DATABASE)
+    if request.method == "POST":
 
+        password = request.form.get("password")
+
+        admin_password = os.environ.get(
+            "ADMIN_PASSWORD",
+            "meetbook-admin"
+        )
+
+        if password == admin_password:
+
+            session["admin_logged_in"] = True
+
+            return redirect(url_for("admin"))
+
+        return render_template(
+            "admin_login.html",
+            error="Incorrect password."
+        )
+
+    if not session.get("admin_logged_in"):
+
+        return render_template(
+            "admin_login.html"
+        )
+
+    conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
 
     bookings = conn.execute(
@@ -291,6 +318,10 @@ def admin():
 @app.route("/admin/approve/<int:booking_id>", methods=["POST"])
 def approve_payment(booking_id):
 
+    if not session.get("admin_logged_in"):
+
+        return redirect(url_for("admin"))
+
     conn = sqlite3.connect(DATABASE)
 
     conn.execute(
@@ -308,6 +339,13 @@ def approve_payment(booking_id):
     return redirect(url_for("admin"))
 
 
+# Admin logout
+@app.route("/admin/logout")
+def admin_logout():
+
+    session.pop("admin_logged_in", None)
+
+    return redirect(url_for("admin"))
 # Display uploaded customer photos
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
