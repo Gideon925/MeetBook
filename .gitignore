@@ -1,5 +1,7 @@
 database.db
 uploads/
+payment_receipts/
+.vscode/
 __pycache__/
 *.pyc
 .env
